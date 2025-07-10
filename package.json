@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "scripts": {
   "_comment1": "Compile le code client avec esbuild, entrée src/main.jsx, sortie dist/bundle.js",
-  "build:client": "esbuild src/main.jsx --bundle --outfile=dist/bundle.js --loader:.js=jsx --loader:.css=css",
+   "build:client": "node esbuild.config.js client",
 
   "_comment2": "Compile le code serveur avec esbuild, entrée server/server.jsx, sortie build/server.js, ciblant node",
-  "build:server": "esbuild server/server.jsx --bundle --outfile=build/server.js --platform=node --target=node20",
+  "build:server": "node esbuild.config.js server",
 
   "_comment3": "Compile client et serveur",
   "build": "npm run build:client && npm run build:server",

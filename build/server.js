@@ -1302,8 +1302,8 @@ var require_node = __commonJS({
           }
           break;
         case "FILE":
-          var fs2 = require("fs");
-          stream2 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          var fs3 = require("fs");
+          stream2 = new fs3.SyncWriteStream(fd2, { autoClose: false });
           stream2._type = "fs";
           break;
         case "PIPE":
@@ -17566,8 +17566,8 @@ var require_node2 = __commonJS({
           }
           break;
         case "FILE":
-          var fs2 = require("fs");
-          stream2 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          var fs3 = require("fs");
+          stream2 = new fs3.SyncWriteStream(fd2, { autoClose: false });
           stream2._type = "fs";
           break;
         case "PIPE":
@@ -18289,8 +18289,8 @@ var require_node3 = __commonJS({
           }
           break;
         case "FILE":
-          var fs2 = require("fs");
-          stream2 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          var fs3 = require("fs");
+          stream2 = new fs3.SyncWriteStream(fd2, { autoClose: false });
           stream2._type = "fs";
           break;
         case "PIPE":
@@ -19188,7 +19188,7 @@ var require_view = __commonJS({
     "use strict";
     var debug = require_src3()("express:view");
     var path2 = require("path");
-    var fs2 = require("fs");
+    var fs3 = require("fs");
     var dirname = path2.dirname;
     var basename = path2.basename;
     var extname = path2.extname;
@@ -19254,7 +19254,7 @@ var require_view = __commonJS({
     function tryStat(path3) {
       debug('stat "%s"', path3);
       try {
-        return fs2.statSync(path3);
+        return fs3.statSync(path3);
       } catch (e2) {
         return void 0;
       }
@@ -19869,8 +19869,8 @@ var require_node4 = __commonJS({
           }
           break;
         case "FILE":
-          var fs2 = require("fs");
-          stream2 = new fs2.SyncWriteStream(fd2, { autoClose: false });
+          var fs3 = require("fs");
+          stream2 = new fs3.SyncWriteStream(fd2, { autoClose: false });
           stream2._type = "fs";
           break;
         case "PIPE":
@@ -20057,7 +20057,7 @@ var require_types = __commonJS({
 var require_mime = __commonJS({
   "node_modules/mime/mime.js"(exports2, module2) {
     var path2 = require("path");
-    var fs2 = require("fs");
+    var fs3 = require("fs");
     function Mime() {
       this.types = /* @__PURE__ */ Object.create(null);
       this.extensions = /* @__PURE__ */ Object.create(null);
@@ -20078,7 +20078,7 @@ var require_mime = __commonJS({
     };
     Mime.prototype.load = function(file) {
       this._loading = file;
-      var map = {}, content = fs2.readFileSync(file, "ascii"), lines = content.split(/[\r\n]+/);
+      var map = {}, content = fs3.readFileSync(file, "ascii"), lines = content.split(/[\r\n]+/);
       lines.forEach(function(line) {
         var fields = line.replace(/\s*#.*|^\s*|\s*$/g, "").split(/\s+/);
         map[fields.shift()] = fields;
@@ -20316,7 +20316,7 @@ var require_send = __commonJS({
     var escapeHtml = require_escape_html();
     var etag = require_etag();
     var fresh = require_fresh();
-    var fs2 = require("fs");
+    var fs3 = require("fs");
     var mime = require_mime();
     var ms = require_ms5();
     var onFinished = require_on_finished();
@@ -20650,7 +20650,7 @@ var require_send = __commonJS({
       var i2 = 0;
       var self2 = this;
       debug('stat "%s"', path3);
-      fs2.stat(path3, function onstat(err, stat2) {
+      fs3.stat(path3, function onstat(err, stat2) {
         if (err && err.code === "ENOENT" && !extname(path3) && path3[path3.length - 1] !== sep) {
           return next(err);
         }
@@ -20667,7 +20667,7 @@ var require_send = __commonJS({
         }
         var p = path3 + "." + self2._extensions[i2++];
         debug('stat "%s"', p);
-        fs2.stat(p, function(err2, stat2) {
+        fs3.stat(p, function(err2, stat2) {
           if (err2)
             return next(err2);
           if (stat2.isDirectory())
@@ -20688,7 +20688,7 @@ var require_send = __commonJS({
         }
         var p = join(path3, self2._index[i2]);
         debug('stat "%s"', p);
-        fs2.stat(p, function(err2, stat2) {
+        fs3.stat(p, function(err2, stat2) {
           if (err2)
             return next(err2);
           if (stat2.isDirectory())
@@ -20702,7 +20702,7 @@ var require_send = __commonJS({
     SendStream.prototype.stream = function stream(path3, options) {
       var self2 = this;
       var res = this.res;
-      var stream2 = fs2.createReadStream(path3, options);
+      var stream2 = fs3.createReadStream(path3, options);
       this.emit("stream", stream2);
       stream2.pipe(res);
       function cleanup() {
@@ -46680,28 +46680,39 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 }
 
 // server/server.jsx
+var import_promises = __toESM(require("fs/promises"));
 var import_path = __toESM(require("path"));
 var import_react2 = __toESM(require_react());
-var import_promises = require("fs/promises");
 var app = (0, import_express.default)();
 var PORT = 3e3;
-console.log("\u{1F680} Serveur Express d\xE9marr\xE9");
+app.use(import_express.default.static(import_path.default.resolve("build/client")));
 app.get("/", async (req, res) => {
   console.log("Route / appel\xE9e");
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la r\xE9cup\xE9ration des t\xE2ches : ${response.status}`);
+    }
     const todos = await response.json();
     console.log("\u2705 Todos c\xF4t\xE9 serveur :", todos.length);
     const appHtml = (0, import_server.renderToStaticMarkup)(/* @__PURE__ */ import_react2.default.createElement(App, { todos }));
-    const htmlTemplate = await (0, import_promises.readFile)("index.html", "utf-8");
-    const finalHtml = htmlTemplate.replace("<!--SSR-->", appHtml);
+    let htmlTemplate;
+    try {
+      htmlTemplate = await import_promises.default.readFile(import_path.default.resolve("index.html"), "utf-8");
+    } catch (err) {
+      console.error("\u274C Erreur lors du chargement du fichier HTML :", err.message);
+      return res.status(500).send("Erreur lors du chargement de la page HTML : " + err.message);
+    }
+    const finalHtml = htmlTemplate.replace(
+      `<div id="root"></div>`,
+      `<div id="root">${appHtml}</div>`
+    );
     res.send(finalHtml);
   } catch (err) {
-    console.error("\u274C Erreur c\xF4t\xE9 serveur :", err);
-    res.status(500).send("Erreur interne du serveur");
+    console.error("\u274C Erreur c\xF4t\xE9 serveur :", err.message);
+    res.status(500).send("Erreur serveur : " + err.message);
   }
 });
-app.use(import_express.default.static(import_path.default.resolve("build")));
 app.listen(PORT, () => {
   console.log(`\u2705 SSR server running at http://localhost:${PORT}`);
 });
