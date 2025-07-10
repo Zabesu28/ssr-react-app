@@ -1,16 +1,25 @@
-import { build } from "esbuild";
-import path from "path";
+const { build } = require("esbuild");
+const path = require("path");
 
-build({
-  entryPoints: ["server/server.jsx"],
-  bundle: true,
-  platform: "node",
-  format: "esm",
-  outfile: "build/server.js",
-  sourcemap: true,
-  external: ["express", "react", "react-dom", "node-fetch"],
-  loader: {
-    ".js": "jsx",
-    ".jsx": "jsx",
-  },
-}).catch(() => process.exit(1));
+(async () => {
+  const clientBuild = await build({
+    entryPoints: ["src/main.jsx"],
+    outfile: "build/client/main.js",
+    bundle: true,
+    platform: "browser",
+    jsx: "automatic",
+    loader: { ".js": "jsx" },
+    sourcemap: true,
+  });
+
+  const serverBuild = await build({
+    entryPoints: ["server/server.jsx"],
+    outfile: "build/server.js",
+    bundle: true,
+    platform: "node",
+    format: "cjs",
+    target: ["node20"],
+  });
+
+  console.log("✅ Build terminé");
+})();

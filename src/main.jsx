@@ -1,12 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
 
-const todos = window.__INITIAL_DATA__ ?? [];
-
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App todos={todos} />
-  </StrictMode>,
-)
+    <App />
+  </StrictMode>
+);
