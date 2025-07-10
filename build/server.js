@@ -46384,7 +46384,6 @@ var import_path = __toESM(require("path"));
 var import_react2 = __toESM(require_react());
 var app = (0, import_express.default)();
 var PORT = 3e3;
-app.use(import_express.default.static(import_path.default.resolve("build/client")));
 app.get("/", async (req, res) => {
   console.log("Route / appel\xE9e");
   try {
@@ -46399,8 +46398,7 @@ app.get("/", async (req, res) => {
     try {
       htmlTemplate = await import_promises.default.readFile(import_path.default.resolve("index.html"), "utf-8");
     } catch (err) {
-      console.error("\u274C Erreur lors du chargement du fichier HTML :", err.message);
-      return res.status(500).send("Erreur lors du chargement de la page HTML : " + err.message);
+      throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
     }
     const finalHtml = htmlTemplate.replace(
       `<div id="root"></div>`,
@@ -46412,6 +46410,9 @@ app.get("/", async (req, res) => {
     res.status(500).send("Erreur serveur : " + err.message);
   }
 });
+app.use(
+  import_express.default.static(import_path.default.resolve(__dirname, "..", "build"), { maxAge: "30d" })
+);
 app.listen(PORT, () => {
   console.log(`\u2705 SSR server running at http://localhost:${PORT}`);
 });

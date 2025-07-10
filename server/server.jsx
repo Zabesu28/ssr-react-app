@@ -9,8 +9,6 @@ import React from "react";
 const app = express();
 const PORT = 3000;
 
-app.use(express.static(path.resolve("build/client")));
-
 app.get("/", async (req, res) => {
   console.log("Route / appelée");
 
@@ -30,10 +28,7 @@ app.get("/", async (req, res) => {
     try {
       htmlTemplate = await fs.readFile(path.resolve("index.html"), "utf-8");
     } catch (err) {
-      console.error("❌ Erreur lors du chargement du fichier HTML :", err.message);
-      return res
-        .status(500)
-        .send("Erreur lors du chargement de la page HTML : " + err.message);
+      throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
     }
 
     const finalHtml = htmlTemplate.replace(
@@ -47,6 +42,10 @@ app.get("/", async (req, res) => {
     res.status(500).send("Erreur serveur : " + err.message);
   }
 });
+
+app.use(
+  express.static(path.resolve(__dirname, "..", "build"), { maxAge: "30d" })
+);
 
 app.listen(PORT, () => {
   console.log(`✅ SSR server running at http://localhost:${PORT}`);
