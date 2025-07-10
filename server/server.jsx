@@ -14,17 +14,24 @@ const PORT = 3000;
 console.log("🚀 Serveur Express démarré");
 
 app.get("/", async (req, res) => {
-  console.log("📥 Requête GET /");
+  console.log("Route / appelée");
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
+    const todos = await response.json();
 
-  const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
-  const todos = await response.json();
-  console.log("✅ Todos récupérés :", todos);
+    console.log("✅ Todos côté serveur :", todos.length);
 
-  const appHtml = renderToStaticMarkup(<App todos={todos} />);
-  const htmlTemplate = fs.readFileSync(path.resolve("build/client/index.html"), "utf-8");
+    const appHtml = renderToStaticMarkup(<App todos={todos} />);
+    const htmlTemplate = fs.readFileSync(path.resolve("build/client/index.html"), "utf-8");
 
-  const finalHtml = htmlTemplate.replace("<!--SSR-->", appHtml);
-  res.send(finalHtml);
+    const initialDataScript = `<script>window.__INITIAL_DATA__ = ${JSON.stringify(todos).replace(/</g, '\\u003c')}</script>`;
+    const finalHtml = htmlTemplate.replace('<!--SSR-->', `${appHtml}${initialDataScript}`);
+
+    res.send(finalHtml);
+  } catch (err) {
+    console.error("❌ Erreur côté serveur :", err);
+    res.status(500).send("Erreur interne du serveur");
+  }
 });
 
 app.use(express.static(path.resolve('build/client')));
