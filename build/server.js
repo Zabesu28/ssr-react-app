@@ -46386,20 +46386,20 @@ var app = (0, import_express.default)();
 var PORT = 3e3;
 app.get("/", async (req, res) => {
   console.log("Route / appel\xE9e");
+  let htmlTemplate;
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
+    htmlTemplate = await import_promises.default.readFile(import_path.default.resolve("index.html"), "utf-8");
+  } catch (err) {
+    throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
+  }
+  try {
+    const response = await fetch("https://jsonplaceholder.typico");
     if (!response.ok) {
       throw new Error(`Erreur lors de la r\xE9cup\xE9ration des t\xE2ches : ${response.status}`);
     }
     const todos = await response.json();
     console.log("\u2705 Todos c\xF4t\xE9 serveur :", todos.length);
     const appHtml = (0, import_server.renderToStaticMarkup)(/* @__PURE__ */ import_react2.default.createElement(App, { todos }));
-    let htmlTemplate;
-    try {
-      htmlTemplate = await import_promises.default.readFile(import_path.default.resolve("index.html"), "utf-8");
-    } catch (err) {
-      throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
-    }
     const finalHtml = htmlTemplate.replace(
       `<div id="root"></div>`,
       `<div id="root">${appHtml}</div>`

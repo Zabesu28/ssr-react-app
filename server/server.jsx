@@ -12,8 +12,15 @@ const PORT = 3000;
 app.get("/", async (req, res) => {
   console.log("Route / appelée");
 
+  let htmlTemplate;
+    try {
+      htmlTemplate = await fs.readFile(path.resolve("index.html"), "utf-8");
+    } catch (err) {
+      throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
+    }
+
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
+    const response = await fetch("https://jsonplaceholder.typico");
 
     if (!response.ok) {
       throw new Error(`Erreur lors de la récupération des tâches : ${response.status}`);
@@ -23,13 +30,6 @@ app.get("/", async (req, res) => {
     console.log("✅ Todos côté serveur :", todos.length);
 
     const appHtml = renderToStaticMarkup(<App todos={todos} />);
-
-    let htmlTemplate;
-    try {
-      htmlTemplate = await fs.readFile(path.resolve("index.html"), "utf-8");
-    } catch (err) {
-      throw new Error("Erreur lors du chargement du fichier HTML : " + err.message);
-    }
 
     const finalHtml = htmlTemplate.replace(
       `<div id="root"></div>`,
