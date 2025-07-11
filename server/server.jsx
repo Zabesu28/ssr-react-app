@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
     }
 
   try {
-    const response = await fetch("https://jsonplaceholder.typico");
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
 
     if (!response.ok) {
       throw new Error(`Erreur lors de la récupération des tâches : ${response.status}`);
